@@ -63,7 +63,7 @@
     
     <input type="email" id="email" class="form-control mb-2" placeholder="Email">
     <input type="password" id="password" class="form-control mb-3" placeholder="Password">
-
+    <!-- Login and Registeration Buttons -->
     <div class="d-grid gap-2">
       <button class="btn btn-primary" onclick="login()" id="loginBtn">Login</button>
       <button class="btn btn-secondary" onclick="register()" id="registerBtn">Register</button>
@@ -77,6 +77,7 @@
       <a href="#" onclick="forgotPassword()">Forgot Password?</a>
     </div>
 
+    <!-- Resend Verification Section -->
     <div id="resendSection" class="text-center mt-3">
       <button class="btn btn-outline-light" onclick="resendVerification()">Resend Verification Email</button>
     </div>
@@ -85,6 +86,7 @@
   </div>
 
   <script>
+    // Initialize Firebase
     document.addEventListener("DOMContentLoaded", function () {
       const firebaseConfig = {
         apiKey: "AIzaSyCgAUEaM168xG7Z48sksbfE2gg-iE6hBcs",
@@ -99,12 +101,14 @@
       const passwordInput = document.getElementById("password");
       const messageBox = document.getElementById("message");
       const resendSection = document.getElementById("resendSection");
-  
+      
+      // Show message function for displaying feedback
       function showMessage(msg, color = "danger") {
         messageBox.className = `mt-3 text-${color} text-center`;
         messageBox.textContent = msg;
       }
-  
+      
+      // Check if user is already logged in
       window.login = function () {
         const email = emailInput.value;
         const password = passwordInput.value;
@@ -121,7 +125,8 @@
           })
           .catch(err => showMessage(err.message));
       };
-  
+      
+      // Register new user
       window.register = function () {
         const email = emailInput.value;
         const password = passwordInput.value;
@@ -137,7 +142,8 @@
           })
           .catch(err => showMessage(err.message));
       };
-  
+      
+      // Resend verification email
       window.resendVerification = function () {
         const email = emailInput.value;
         const password = passwordInput.value;
@@ -157,7 +163,8 @@
           })
           .catch(err => showMessage(err.message));
       };
-  
+      
+      // Forgot password functionality
       window.forgotPassword = function () {
         const email = emailInput.value;
         if (!email) return showMessage("Enter your email to reset password.");
@@ -165,7 +172,8 @@
           .then(() => showMessage("Password reset link sent to your email.", "success"))
           .catch(err => showMessage(err.message));
       };
-  
+      
+      // Oauth with Google
       window.loginWithGoogle = function () {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)

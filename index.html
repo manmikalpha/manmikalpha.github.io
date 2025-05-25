@@ -170,7 +170,7 @@
       
 
     </div>
-
+    <!-- Sensor History Charts -->
     <div class="row g-4 mt-3">
       <div class="col-12 col-md-6">
         <div class="card p-3">
@@ -203,7 +203,7 @@
     
 
 
-
+    <!-- Reset Wi-Fi Settings -->
     <div class="card p-3 mt-3 ">
       <h3 class="section-title">Reset Wi-Fi</h3>
       <form action="/reset" method="post">
@@ -218,7 +218,7 @@
   
 
   <script>
-
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCgAUEaM168xG7Z48sksbfE2gg-iE6hBcs",
       authDomain: "air-purifier-56831.firebaseapp.com",
@@ -228,7 +228,7 @@
       messagingSenderId: "178108668196",
       appId: "1:178108668196:web:18b9059fefa78c7447fbb1"
     };
-
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
     firebase.auth().onAuthStateChanged(user => {
@@ -245,13 +245,13 @@
 
 
 
-
+    // Global variables for charts
     let chartAqi = null;
     let chartTvoc = null;
     let chartTemp = null;
     let chartCo2 = null;
     const db = firebase.database();
-  
+    // Function to update the UI with sensor data
     function updateUI(data) {
       document.getElementById("temperature").textContent = data.temperature;
       document.getElementById("humidity").textContent = data.humidity;
@@ -265,10 +265,10 @@
       const data = snapshot.val();
       const now = Date.now();
       const lastSeen = data?.lastSeen || 0;
-  
+      // Check if data is available
       if (data) {
         updateUI(data);
-  
+        // Update device status based on last seen timestamp
         if ((now - lastSeen * 1000) < 15000) {
           document.getElementById("deviceStatus").textContent = "Online";
           document.getElementById("deviceStatus").style.color = "#00FF99";
@@ -289,7 +289,7 @@
       document.getElementById("deviceStatus").textContent = "Offline";
       document.getElementById("deviceStatus").style.color = "#FF5555";
     });
-  
+    // Fan control by AQI
     document.getElementById("thresholdPM25").addEventListener("input", function () {
       document.getElementById("thresholdValue").textContent = this.value;
       if (document.getElementById("autoToggle").checked) {
@@ -300,7 +300,7 @@
         });
       }
     });
-  
+    // Fan control by TVOC
     document.getElementById("thresholdTVOC").addEventListener("input", function () {
       document.getElementById("thresholdValueTVOC").textContent = this.value;
       if (document.getElementById("autoToggle").checked) {
@@ -311,7 +311,7 @@
         });
       }
     });
-  
+    // Fan speed control for manual mode
     document.getElementById("fanSpeed").addEventListener("change", function () {
       if (!document.getElementById("autoToggle").checked) {
         db.ref("/fan").set({
@@ -320,7 +320,7 @@
         });
       }
     });
-  
+    // Toggle between manual and auto control
     document.getElementById("autoToggle").addEventListener("change", function () {
     const isAuto = this.checked;
     document.getElementById("manualControl").classList.toggle("d-none", isAuto);
@@ -330,6 +330,7 @@
     const threshold = parseInt(document.getElementById("thresholdPM25").value);
     const tvocThreshold = parseInt(document.getElementById("thresholdTVOC").value);
 
+    // Update fan settings based on mode
     if (isAuto) {
       db.ref("/fan").set({
         mode: "auto",
@@ -345,6 +346,7 @@
     }
   });
 
+// Toggle smart mode for auto fan control
   document.getElementById("smartToggle").addEventListener("change", function () {
   const thresholdControls = document.getElementById("thresholdControls");
 
@@ -365,6 +367,7 @@
   });
 });
 
+// Fetch sensor history for the past hour
 function fetchSensorHistory() {
   const now = Math.floor(Date.now() / 1000);
   const oneHourAgo = now - 3600;
@@ -391,7 +394,7 @@ function fetchSensorHistory() {
 
       }
     });
-
+    // Draw or update the charts
     chartAqi = drawSingleChart("chartAqi", chartAqi, labels, aqiData, "AQI", "#00bfbf");
     chartTvoc = drawSingleChart("chartTvoc", chartTvoc, labels, tvocData, "TVOC (ppb)", "#ffaa00");
     chartTemp = drawSingleChart("chartTemp", chartTemp, labels, tempData, "Temperature (°C)", "#ff6666");
@@ -403,7 +406,7 @@ function fetchSensorHistory() {
 
 
 let historyChart = null; // global reference
-
+// Common function to draw a single chart
 function drawSingleChart(canvasId, chartRef, labels, data, label, color) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) {
@@ -446,7 +449,7 @@ function drawSingleChart(canvasId, chartRef, labels, data, label, color) {
 
 
 
-
+// Initialize the charts and fetch history on page load
 window.addEventListener("load", () => {
   fetchSensorHistory();
   setInterval(fetchSensorHistory, 20000);
