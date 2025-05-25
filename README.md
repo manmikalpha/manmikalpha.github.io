@@ -69,9 +69,9 @@ open login.html
 
 # Or just double-click the file
 ```
-4. Optional: Use a Local Server
-For full functionality (e.g., service workers, CORS), use a local server:
-✅ Option A: Using Live Server (Recommended)
+4. Optional: Use a Local Server<br>
+For full functionality (e.g., service workers, CORS), use a local server:<br>
+✅ Option A: Using Live Server (Recommended)  
 
 - Install Visual Studio Code
 - Open the project folder in VS Code.
