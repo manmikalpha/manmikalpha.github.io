@@ -237,6 +237,7 @@
       }
     });
 
+    // Logout function
     function logout() {
       firebase.auth().signOut().then(() => {
         window.location.href = "login.html";
@@ -251,6 +252,7 @@
     let chartTemp = null;
     let chartCo2 = null;
     const db = firebase.database();
+
     // Function to update the UI with sensor data
     function updateUI(data) {
       document.getElementById("temperature").textContent = data.temperature;
@@ -374,6 +376,7 @@ function fetchSensorHistory() {
 
   const ref = firebase.database().ref("/sensor_history");
 
+  // Clear previous history data older than one hour
   ref.orderByKey().startAt(oneHourAgo.toString()).once("value", (snapshot) => {
     const data = snapshot.val();
     if (!data) return;

@@ -202,7 +202,7 @@ void connectToWiFi() {
   startAPMode();
 }
 
-
+// function to handle wifi reset request from client
 void handleReset() {
   Serial.println("Reset triggered from client.");
   WiFi.disconnect(true);
@@ -216,6 +216,7 @@ void handleReset() {
 
 // Function to send sensor data to Firebase
 void sendToFirebase() {
+  //check if WiFi is connected before sending data
   if (WiFi.status() == WL_CONNECTED) {
     pinMode(ledPower, OUTPUT);
     digitalWrite(ledPower, LOW);
@@ -225,10 +226,12 @@ void sendToFirebase() {
     digitalWrite(ledPower, HIGH);
     delayMicroseconds(sleepTime);
 
+    // Calculate dust density in µg/m³
     float calcVoltage = voMeasured * (3.3 / 4095.0);
     float dustDensity = (calcVoltage - 0.2) * 161.29;
     if (dustDensity < 0) dustDensity = 0.0;
 
+    // Calculate AQI based on concentration
     int aqi = calculateAQI_PM25(dustDensity);
 
     float temperature = bme.readTemperature();
@@ -243,6 +246,7 @@ void sendToFirebase() {
 
     time_t now = time(nullptr);
 
+    // Prepare JSON payload
     String json = "{";
     json += "\"temperature\": " + String(temperature, 2) + ", ";
     json += "\"humidity\": " + String(humidity, 2) + ", ";
@@ -265,6 +269,7 @@ void sendToFirebase() {
     }
     firebaseHttp.end();
 
+    // Log history every 30 seconds
     static unsigned long lastHistorySave = 0;
     if (millis() - lastHistorySave >= 30000) {
       lastHistorySave = millis();
@@ -278,7 +283,7 @@ void sendToFirebase() {
       json += "\"co2\": " + String(co2);
       json += "}";
 
-
+      // Send history data to Firebase
       HTTPClient firebaseHttp;
       firebaseHttp.begin("https://air-purifier-56831-default-rtdb.asia-southeast1.firebasedatabase.app" + path + ".json");
       firebaseHttp.addHeader("Content-Type", "application/json");
@@ -301,11 +306,13 @@ void fetchFanSpeedFromFirebase() {
     firebaseHttp.begin(FAN_CONTROL_PATH);
     int httpCode = firebaseHttp.GET();
 
+    // Check if the request was successful
     if (httpCode == 200) {
       String payload = firebaseHttp.getString();
       int fanLevel = payload.toInt();
       Serial.printf("Received fan speed: %d\n", fanLevel);
 
+      // Map fan level to PWM value
       int fanPWM;
       switch (fanLevel) {
         case 1: fanPWM = 232; break;
@@ -345,12 +352,15 @@ void setup() {
     Serial.println("CCS811 init failed. Check wiring.");
     delay(1000);
   }
+  // Set CCS811 measurement mode
   sensor.setMeasCycle(sensor.eCycle_250ms);
   connectToWiFi();
+  // Set up NTP time sync
   if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED) {
   Serial.print("Waiting for NTP time sync...");
   time_t now = time(nullptr);
   configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+  // Wait for time to sync
   while (now < 100000) {
     delay(500);
     Serial.print(".");
@@ -409,7 +419,8 @@ void loop() {
         firebaseHttp.begin("https://air-purifier-56831-default-rtdb.asia-southeast1.firebasedatabase.app/fan/tvocThreshold.json");
         int tvocCode = firebaseHttp.GET();
         float tvocThreshold = 9999; // default high
-
+        
+        // Check if TVOC threshold is set
         if (tvocCode == 200) {
           String tvocStr = firebaseHttp.getString();
           tvocThreshold = tvocStr.toFloat();
@@ -431,6 +442,7 @@ void loop() {
           Serial.println("sensor.json payload:");
           Serial.println(payload);
 
+          // Parse the payload to extract AQI
           int start = payload.indexOf("\"aqi\":");
           if (start >= 0) {
             int end = payload.indexOf(",", start);  // works because aqi is followed by comma

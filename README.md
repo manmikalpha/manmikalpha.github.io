@@ -24,15 +24,15 @@ This project is a smart air purification system with a web-based dashboard for r
 
 You can access the hosted version via GitHub Pages at: https://manmikalpha.github.io/
 
-Follow these steps to run the project locally:
+### Follow these steps to run the project locally:
 
-### 1. Clone the Repository
+**1. Clone the Repository**
 
 ```bash
 git clone https://github.com/manmikalpha/manmikalpha.github.io.git
 cd manmikalpha.github.io
 ```
-2. Set Up Firebase
+**2. Set Up Firebase**
    
 - Go to Firebase Console
 - Create a new project or use an existing one.
@@ -58,19 +58,19 @@ cd manmikalpha.github.io
   messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
   appId: "YOUR_APP_ID"};
   ```
-3. Open in Browser
+**3. Open in Browser**  
 You can open the project directly in your browser using:
-```bash
-# On Windows
-start login.html
+  ```bash
+  # On Windows
+  start login.html
 
-# On macOS
-open login.html
+  # On macOS
+  open login.html
 
-# Or just double-click the file
-```
-4. Optional: Use a Local Server<br>
-For full functionality (e.g., service workers, CORS), use a local server:<br>
+  # Or just double-click the file
+  ```
+**4. Optional: Use a Local Server**  
+For full functionality (e.g., service workers, CORS), use a local server:  
 ✅ Option A: Using Live Server (Recommended)  
 
 - Install Visual Studio Code
@@ -78,13 +78,11 @@ For full functionality (e.g., service workers, CORS), use a local server:<br>
 - Install the Live Server extension from the Extensions Marketplace (by Ritwick Dey).
 - Right-click on login.html and choose "Open with Live Server".
 - Your browser will open at http://127.0.0.1:5500/login.html (or similar), showing the login page.
-- Tip: This automatically refreshes the browser when you save changes!
-
+- Tip: This automatically refreshes the browser when you save changes!  <br><br>
 ✅ Option B: Using Python HTTP Server
 If you have Python installed:
 ```bash
 # For Python 3.x
 python -m http.server
 ```
-Then visit:
-http://localhost:8000/login.html in your browser.
+- Then visit: http://localhost:8000/login.html in your browser.
